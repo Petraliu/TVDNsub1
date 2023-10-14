@@ -13,21 +13,21 @@ import seaborn as sns
 #load data for subject 1
 #data=pd.read_csv("E:\petra\TVDNsub1-main\ef.csv")
 #np.save("efdata.npy",data)
-for n in range(1,6):
+for n in range(1,322):
     fMRI = np.load("E:\petra\TVDNsub1-main\subjects_all.npy")
     fMRI = fMRI[:, 1:]
     condition = fMRI[:, 0] == n
     sub_1 = fMRI[condition]
     fMRI = sub_1
     # Construct the TVDN Detection Class
-    kappa = 1.53
+    kappa = 1.394
     lamb = 1e-6
-    r = 6
+    r = 16
     Lmin = 10
     fct = 2
     nsim = 50
-    fMRIdet = TVDNDetect(Ymat=fMRI, saveDir="E:\petra\TVDNsub1-main\saved", dataType="fMRI", fName="fMRIsample_",
-                         r=6, kappa=1.576, fct=2, lamb=1e-6, downRate=4, MaxM=10, Lmin=10, freq=0.5)
+    fMRIdet = TVDNDetect(Ymat=fMRI, saveDir=None, dataType="fMRI", fName="fMRIsample_",
+                         r=16, kappa=1.394, fct=2, lamb=1e-6, downRate=4, MaxM=10, Lmin=10, freq=0.5)
     fMRIdet()
     # Tuning the kappa parameters: (0.5,10)->1.6515; (1.5,1.7)->1.591,
     kappas = np.linspace(1, 2, 100)
@@ -36,8 +36,12 @@ for n in range(1,6):
     print("The optimal kappas are:", fMRIdet.optKappa)
     print("The optimal number of change point under the range of kappa we speicified is:", fMRIdet.optKappaOptNumChg)
     print("The optimal number of change point is:", fMRIdet.optNumChg)
-    # fMRIdet.UpdateEcpts(numChg=2)
-    fMRIdet.UpdateEcpts(2)
+
+
+
+
+    fMRIdet.UpdateEcpts(numChg=2)
+    #fMRIdet.UpdateEcpts(2)
     print(fMRIdet)
     dir(fMRIdet)
     print(fMRIdet.ecpts)
@@ -48,7 +52,7 @@ for n in range(1,6):
     lamMs = fMRIdet.curEigVals
 
     # Change the number of change point
-    fMRIdet.UpdateEcpts(2)  # Reconstruct the Xmat and estiamte the eigen values, again
+    fMRIdet.UpdateEcpts(1)  # Reconstruct the Xmat and estiamte the eigen values, again
     fMRIdet.GetFeatures()
     lamMs = fMRIdet.curEigVals
 
@@ -82,7 +86,7 @@ for n in range(1,6):
         print(b_final)
         print(c_final)
         print(d_final)
-        print(e_final)
+        #print(e_final)
         print(f_final)
         np.save('savedcpts.npy',a_final)
         np.save('savedoptKappa.npy', b_final)
@@ -92,4 +96,3 @@ for n in range(1,6):
         np.save('savedcurEigVecs.npy', f_final)
     n = n+1
     print(n)
-
